@@ -43,5 +43,6 @@ deploy:
   file: build-env/addons/sourcemod/scripting/compiled/gamedaemon.smx
   on:
     repo: clani90/sm-gamedaemon
+    tags: true
 notifications:
   email: false
