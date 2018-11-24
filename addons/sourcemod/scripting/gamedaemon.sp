@@ -1,7 +1,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <cstrike>
-#include <include/system2>
+#include <system2>
 #include <include/json>
  
 public Plugin myinfo =
