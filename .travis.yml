@@ -48,7 +48,7 @@ after_failure:
 
 deploy:
   provider: releases
-  api_key: "FKjpUU3EjEtrfRW9Evu3pg"
+  api_key: "31253a32e7c62e9bfdc97ae23a3ee87d98163f6c"
   file: build-env/addons/sourcemod/scripting/compiled/gamedaemon.smx
   skip_cleanup: true
   on:
