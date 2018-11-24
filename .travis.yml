@@ -36,6 +36,7 @@ after_success:
   - cd ../../../.. 
   - cp -rv build-env/addons/sourcemod/scripting/compiled/. $PLUGINS 
   - cd $PLUGINS 
+  - ls
   - find . -type f -exec curl --user $FTPUSER:$FTPPASS --ftp-create-dirs -T {} ftp://$HOME/$SOURCEMOD/{} \; 
   - chmod +x discord.sh
   - ./discord.sh success
