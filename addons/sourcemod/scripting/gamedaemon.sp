@@ -2,7 +2,7 @@
 #include <sdktools>
 #include <cstrike>
 #include <system2>
-#include <include/json>
+#include <json>
  
 public Plugin myinfo =
 {
