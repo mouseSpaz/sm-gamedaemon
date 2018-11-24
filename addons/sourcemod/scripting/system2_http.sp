@@ -29,7 +29,7 @@
  */
 
 #include <sourcemod>
-#include <system2>
+#include <include/system2>
 
 
 public void OnPluginStart() {
