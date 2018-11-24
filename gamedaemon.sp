@@ -63,19 +63,19 @@ public void HttpResponseCallback(bool success, const char[] error, System2HTTPRe
             KickClient(request.Any, "You are not authorized.");
         }
         
-		char[] content = new char[response.ContentLength + 1];
+        char[] content = new char[response.ContentLength + 1];
         response.GetContent(content, response.ContentLength + 1);
-        
+
         JSON_Object payload = json_decode(content);
 
-		payload.GetString("username", username, sizeof(username)
-		is_admin = payload.GetBool("is_admin");
+        payload.GetString("username", username, sizeof(username));
+        is_admin = payload.GetBool("is_admin");
 
-		if (is_admin == true) {
-			AdminId admin = CreateAdmin();
-			SetAdminFlag(admin, Admin_Root, true);
-			SetUserAdmin(request.Any, admin, true);
-		}
+        if (is_admin == true) {
+	        AdminId admin = CreateAdmin();
+	        SetAdminFlag(admin, Admin_Root, true);
+	        SetUserAdmin(request.Any, admin, true);
+	    }
         
         SetClientInfo(request.Any, "name", username);
 		
