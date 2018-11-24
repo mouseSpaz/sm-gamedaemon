@@ -44,6 +44,15 @@ after_success:
 after_failure:
  - chmod +x discord.sh
  - ./discord.sh failure
+
+
+deploy:
+  provider: releases
+  api_key: "9e5aed6951354f0dfa1f624d69b34c8f542a05b7"
+  file: build-env/addons/sourcemod/scripting/compiled/gamedaemon.smx
+  skip_cleanup: true
+  on:
+    tags: true
    
 notifications: 
     email: false  
