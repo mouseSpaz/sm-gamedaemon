@@ -28,7 +28,6 @@ script:
 after_success:
 - cd ../../../..
 - cp -rv build-env/addons/sourcemod/scripting/compiled/. $PLUGINS
-- cd build-env
 - ls
 - chmod +x discord.sh
 - ./discord.sh success
