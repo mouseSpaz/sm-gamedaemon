@@ -38,7 +38,7 @@ deploy:
   provider: releases
   api_key:
     secure: H5SbyA91GFN7DcDWZDY0pqNTEBWuXyDe/LlzGlkKu9zZzf8rretfMKTPHHqLjF6SRZ1brrk1qG4iFLq08eWA/FaP/uHgDHZj1l1kkY57ftit80RlrGUnDodSJzl5Qne6rSQ721Dueq5jDO+WjZ8qFegN0QJJUziSeYRM5ex1+uPMFip6lvW5Er5SeRRHV7044CY/nk37PAQvGoxtULnCxaV8Tn3ZzdCIUroLyRf5c46v7iRoNgbVvYzSEyaNpDaHaiWaFXUU5+gK+IVE64FheLHHEp5wosatGV63sL/9auRgi3UX8udfs/w1rVQUFkH0HCqYE8EiOuZERV3160IGGIbJCXz+U9GVzVuMFvnUEX6fh0qdhuURV1rlg/VHG2S1TSM2cUAGO6+Dqhlg/Z2j9PkJ+O0eBQXfSrrPColIWTehAIWEQVhNG34hj0RAP0uVGr1A+DaOMNIdDCKHrjKt1SSD4nnZvi8ozIlZpXtgtnl+Y4OLNiB/w9edsNdow7UpcDdU4JvJgAzsWKPyJWCAtug7CM4q4WaZzJfVMYdT+sv3vrt3gy6pDexM8o2HVyI+Z/b7k8L3+b0vjlFnp0+pMAC+5l6eDNL2kMcBDRBlJooVvag36EWNFoCFGQYyEiMWEoTm36npGIkLTH3x6djVDS0dD5p4JbivmVgJN+yimEg=
-  file: build-env/addon/sourcemod/scripting/compiled/gamedaemon.smx
+  file: build-env/addons/sourcemod/scripting/compiled/gamedaemon.smx
   skip_cleanup: true
   on:
     repo: clani90/sm-gamedaemon
