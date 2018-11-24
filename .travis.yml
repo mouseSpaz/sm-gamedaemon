@@ -29,6 +29,7 @@ after_success:
 - cd ../../../..
 - cp -rv build-env/addons/sourcemod/scripting/compiled/. $PLUGINS
 - cd $PLUGINS
+- ls
 - chmod +x discord.sh
 - ./discord.sh success
 after_failure:
