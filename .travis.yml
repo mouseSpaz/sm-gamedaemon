@@ -21,8 +21,8 @@ install:
   - tar -xzvf sourcemod.tar.gz
   - cd ../ 
   - find build-env/addons/sourcemod/scripting/ -name "*.sp" -type f -delete 
-  - cp -rv addons/sourcemod/scripting/build-env/addons/sourcemod/scripting/ 
-  - cp -rv addons/sourcemod/scripting/include/build-env/addons/sourcemod/scripting/include/ 
+  - cp -rv addons/sourcemod/scripting/ build-env/addons/sourcemod/scripting/ 
+  - cp -rv addons/sourcemod/scripting/include/ build-env/addons/sourcemod/scripting/include/ 
 
 before_script: 
   - chmod +rx build-env/addons/sourcemod/scripting/spcomp 
@@ -37,6 +37,12 @@ after_success:
   - cp -rv build-env/addons/sourcemod/scripting/compiled/. $PLUGINS 
   - cd $PLUGINS 
   - find . -type f -exec curl --user $FTPUSER:$FTPPASS --ftp-create-dirs -T {} ftp://$HOME/$SOURCEMOD/{} \; 
+  - chmod +x discord.sh
+  - ./discord.sh success
+
+after_failure:
+ - chmod +x discord.sh
+ - ./discord.sh failure
    
 notifications: 
     email: false  
