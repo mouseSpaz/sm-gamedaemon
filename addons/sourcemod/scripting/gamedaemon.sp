@@ -3,6 +3,8 @@
 #include <cstrike>
 #include <system2>
 #include <json>
+bool g_cvGated = false;
+ConVar g_TollCvar
  
 public Plugin myinfo =
 {
@@ -15,7 +17,21 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-    PrintToServer("GameDaemon loaded");
+	PrintToServer("GameDaemon loaded");
+
+	g_TollCvar = CreateConVar("sm_toll", "1", "Allow unauthorized steamids to join the server.");
+
+	RegAdminCmd("sm_gated", Command_ToggleGate, ADMFLAG_CHANGEMAP, "Launches practice mode");
+} 
+
+public Action Command_ToggleGate(int client, int args) {
+	char full[256];
+
+	GetCmdArgString(full, sizeof(full))
+
+	g_TollCvar.BoolValue = StringToInt(full);
+
+	return Plugin_Handled;
 }
 
 public OnClientPostAdminCheck(client)
@@ -51,35 +67,60 @@ public OnClientPostAdminCheck(client)
 
 public void HttpResponseCallback(bool success, const char[] error, System2HTTPRequest request, System2HTTPResponse response, HTTPRequestMethod method) {
     if (success) {
+		/**
+		 *	Send request and parse request metadata
+		 **/
         char lastURL[128];
-        response.GetLastURL(lastURL, sizeof(lastURL));
-
+		response.GetLastURL(lastURL, sizeof(lastURL));
+		
         int statusCode = response.StatusCode;
         float totalTime = response.TotalTime;
-        char username[32];
-        bool is_admin = false;
 
-        if (statusCode != 200) {
-            KickClient(request.Any, "You are not authorized.");
-        }
-        
-        char[] content = new char[response.ContentLength + 1];
-        response.GetContent(content, response.ContentLength + 1);
 
-        JSON_Object payload = json_decode(content);
+		/**
+		 * Check if user exists in database.
+		 **/
+		if (statusCode != 200) {
+			// If sm_gated is true, you must exist in the database.
+			if(g_cvGated) {
+				KickClient(request.Any, "Members only, clani90.com");
+			}
+			return;
+		}
 
-        payload.GetString("username", username, sizeof(username));
-        is_admin = payload.GetBool("is_admin");
+		/**
+		 * Parse json payload and load into memory
+		 **/
+		char[] content = new char[response.ContentLength + 1];
+		response.GetContent(content, response.ContentLength + 1);
 
-        if (is_admin == true) {
-	        AdminId admin = CreateAdmin();
-	        SetAdminFlag(admin, Admin_Root, true);
-	        SetUserAdmin(request.Any, admin, true);
-	    }
-        
-        SetClientInfo(request.Any, "name", username);
+		JSON_Object payload = json_decode(content);
+
+		char username[32];		
+		payload.GetString("username", username, sizeof(username));
+
+		bool is_admin = false;
+		is_admin = payload.GetBool("is_admin");
+		
+
+		/**
+		 * Give client admin privileges
+		 **/
+		if (is_admin == true) {
+			AdminId admin = CreateAdmin();
+
+			SetAdminFlag(admin, Admin_Root, true);
+
+			SetUserAdmin(request.Any, admin, true);
+		}
+
+		/** 
+		 * Enforce client name
+		 **/
+		SetClientInfo(request.Any, "name", username);
 		
         PrintToServer("Request to %s finished with status code %d in %.2f seconds", lastURL, statusCode, totalTime);
+
     } else {
         PrintToServer("Error on request: %s", error);
     }
