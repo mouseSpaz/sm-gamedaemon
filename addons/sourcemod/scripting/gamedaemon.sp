@@ -22,14 +22,14 @@ public void OnPluginStart()
 	g_TollCvar = CreateConVar("sm_toll", "1", "Allow unauthorized steamids to join the server.");
 
 	RegAdminCmd("sm_gated", Command_ToggleGate, ADMFLAG_CHANGEMAP, "Launches practice mode");
-} 
+}
 
 public Action Command_ToggleGate(int client, int args) {
 	char full[256];
 
 	GetCmdArgString(full, sizeof(full))
 
-	g_TollCvar.BoolValue = StringToInt(full);
+	g_TollCvar.IntValue = StringToInt(full);
 
 	return Plugin_Handled;
 }
@@ -71,8 +71,7 @@ public void HttpResponseCallback(bool success, const char[] error, System2HTTPRe
 		 *	Send request and parse request metadata
 		 **/
         char lastURL[128];
-		response.GetLastURL(lastURL, sizeof(lastURL));
-		
+        response.GetLastURL(lastURL, sizeof(lastURL));
         int statusCode = response.StatusCode;
         float totalTime = response.TotalTime;
 
@@ -80,7 +79,7 @@ public void HttpResponseCallback(bool success, const char[] error, System2HTTPRe
 		/**
 		 * Check if user exists in database.
 		 **/
-		if (statusCode != 200) {
+        if (statusCode != 200) {
 			// If sm_gated is true, you must exist in the database.
 			if(g_cvGated) {
 				KickClient(request.Any, "Members only, clani90.com");
@@ -91,22 +90,22 @@ public void HttpResponseCallback(bool success, const char[] error, System2HTTPRe
 		/**
 		 * Parse json payload and load into memory
 		 **/
-		char[] content = new char[response.ContentLength + 1];
-		response.GetContent(content, response.ContentLength + 1);
+        char[] content = new char[response.ContentLength + 1];
+        response.GetContent(content, response.ContentLength + 1);
 
-		JSON_Object payload = json_decode(content);
+        JSON_Object payload = json_decode(content);
 
-		char username[32];		
-		payload.GetString("username", username, sizeof(username));
+        char username[32];		
+        payload.GetString("username", username, sizeof(username));
 
-		bool is_admin = false;
-		is_admin = payload.GetBool("is_admin");
+        bool is_admin = false;
+        is_admin = payload.GetBool("is_admin");
 		
 
 		/**
 		 * Give client admin privileges
 		 **/
-		if (is_admin == true) {
+        if (is_admin == true) {
 			AdminId admin = CreateAdmin();
 
 			SetAdminFlag(admin, Admin_Root, true);
@@ -117,7 +116,7 @@ public void HttpResponseCallback(bool success, const char[] error, System2HTTPRe
 		/** 
 		 * Enforce client name
 		 **/
-		SetClientInfo(request.Any, "name", username);
+        SetClientInfo(request.Any, "name", username);
 		
         PrintToServer("Request to %s finished with status code %d in %.2f seconds", lastURL, statusCode, totalTime);
 
