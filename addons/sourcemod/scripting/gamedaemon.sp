@@ -3,8 +3,7 @@
 #include <cstrike>
 #include <system2>
 #include <json>
-bool g_cvGated = false;
-ConVar g_TollCvar
+ConVar g_hTollConVar
  
 public Plugin myinfo =
 {
@@ -19,20 +18,24 @@ public void OnPluginStart()
 {
 	PrintToServer("GameDaemon loaded");
 
-	g_TollCvar = CreateConVar("sm_toll", "1", "Allow unauthorized steamids to join the server.");
-
-	RegAdminCmd("sm_gated", Command_ToggleGate, ADMFLAG_CHANGEMAP, "Launches practice mode");
+	g_hTollConVar = CreateConVar("i90_toll", "1", "Allow unauthorized steamids to join the server.", FCVAR_NOTIFY|FCVAR_DONTRECORD, true, 0.0, true, 1.0);	
+	HookConVarChange(g_hTollConVar, ConVar_TollChange)
 }
 
-public Action Command_ToggleGate(int client, int args) {
-	char full[256];
+public ConVar_TollChange(Handle:convar, const String:oldValue[], const String:newValue[])
+{
+	new enabled = GetConVarBool(g_hTollConVar);
 
-	GetCmdArgString(full, sizeof(full))
-
-	g_TollCvar.IntValue = StringToInt(full);
-
-	return Plugin_Handled;
-}
+	for(new i = 1; i <= MaxClients; i++){
+		if(IsClientInGame(i)){
+			if(enabled){
+			    PrintToChat(i, "server is now admitting members only.");
+			} else {
+				PrintToChat(i, "server is now open to the public.");
+			}
+		}
+	}	
+ }
 
 public OnClientPostAdminCheck(client)
 {
@@ -50,7 +53,6 @@ public OnClientPostAdminCheck(client)
 	
 	    Format(url, sizeof(url), "%s%s", "http://clani90.com/wp-json/ramp/v1/player/", authid);
 	
-		
 	    System2HTTPRequest httpRequest = new System2HTTPRequest(HttpResponseCallback, url);
 	    
 	    httpRequest.Any = client;
@@ -81,8 +83,8 @@ public void HttpResponseCallback(bool success, const char[] error, System2HTTPRe
 		 **/
         if (statusCode != 200) {
 			// If sm_gated is true, you must exist in the database.
-			if(g_cvGated) {
-				KickClient(request.Any, "Members only, clani90.com");
+			if(GetConVarBool(g_hTollConVar)) {
+				KickClient(request.Any, "Members only, join at clani90.com");
 			}
 			return;
 		}
@@ -101,11 +103,13 @@ public void HttpResponseCallback(bool success, const char[] error, System2HTTPRe
         bool is_admin = false;
         is_admin = payload.GetBool("is_admin");
 		
+        json_cleanup(payload);
+		
 
 		/**
 		 * Give client admin privileges
 		 **/
-        if (is_admin == true) {
+    	if (is_admin == true) {
 			AdminId admin = CreateAdmin();
 
 			SetAdminFlag(admin, Admin_Root, true);
