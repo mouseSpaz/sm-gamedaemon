@@ -8,8 +8,8 @@ ConVar g_hTollConVar
 public Plugin myinfo =
 {
 	name = "Game Daemon",
-	author = "Reefiki <reefiki@clani90.com",
-	description = "Syncs authorization with clani90.com",
+	author = "Sh3nl0ng <shen@mousespaz.com>",
+	description = "Syncs authorization with spaz.gg",
 	version = "1.0",
 	url = "http://www.sourcemod.net/"
 };
@@ -18,7 +18,7 @@ public void OnPluginStart()
 {
 	PrintToServer("GameDaemon loaded");
 
-	g_hTollConVar = CreateConVar("i90_toll", "1", "Allow unauthorized steamids to join the server.", FCVAR_NOTIFY|FCVAR_DONTRECORD, true, 0.0, true, 1.0);	
+	g_hTollConVar = CreateConVar("spaz_toll", "1", "Allow unauthorized steamids to join the server.", FCVAR_NOTIFY|FCVAR_DONTRECORD, true, 0.0, true, 1.0);	
 	HookConVarChange(g_hTollConVar, ConVar_TollChange)
 }
 
@@ -51,7 +51,7 @@ public OnClientPostAdminCheck(client)
 	
 	    decl String:url[512];
 	
-	    Format(url, sizeof(url), "%s%s", "http://clani90.com/wp-json/ramp/v1/player/", authid);
+	    Format(url, sizeof(url), "%s%s", "http://spaz.gg/api/steamid/", authid);
 	
 	    System2HTTPRequest httpRequest = new System2HTTPRequest(HttpResponseCallback, url);
 	    
@@ -84,7 +84,7 @@ public void HttpResponseCallback(bool success, const char[] error, System2HTTPRe
         if (statusCode != 200) {
 			// If sm_gated is true, you must exist in the database.
 			if(GetConVarBool(g_hTollConVar)) {
-				KickClient(request.Any, "Members only, join at clani90.com");
+				KickClient(request.Any, "Members only, join at spaz.gg");
 			}
 			return;
 		}
